@@ -10,8 +10,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        jcenter()
-        maven {url'https://jitpack.io'}
+        jcenter()   //加上后litePal可用了
+        maven {url'https://jitpack.io'}  //同上
     }
 }
 rootProject.name = "CoolWeather"
