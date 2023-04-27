@@ -25,7 +25,7 @@ public class Utility {
                 }
                 return true;
             }catch (JSONException e){
-                e.getStackTrace();
+                e.printStackTrace();
             }
         }
         return false;
@@ -44,12 +44,12 @@ public class Utility {
                 }
                 return true;
             }catch (JSONException e){
-                e.getStackTrace();
+                e.printStackTrace();
             }
         }
         return false;
     }
-    public static boolean handleCountyResponse(String response,int CityId){
+    public static boolean handleCountyResponse(String response,int cityId){
         if(!TextUtils.isEmpty(response)){
             try{
                 JSONArray allCounties = new JSONArray(response);
@@ -58,12 +58,12 @@ public class Utility {
                     County county= new County();
                     county.setCountyName(countyObject.getString("name"));
                     county.setWeatherId(countyObject.getString("weather_id"));
-                    county.setCityId(CityId);
+                    county.setCityId(cityId);
                     county.save();
                 }
                 return true;
             }catch (JSONException e){
-                e.getStackTrace();
+                e.printStackTrace();
             }
         }
         return false;
