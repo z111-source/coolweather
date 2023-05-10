@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/choose_area"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.example.coolweather.ChooseAreaFragment"/>
-</FrameLayout>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+   >
+
+     <androidx.fragment.app.FragmentContainerView
+         android:id="@+id/choose"
+         android:name="com.example.coolweather.ChooseFragment"
+         android:layout_width="match_parent"
+         android:layout_height="0dp"
+         android:layout_weight="1"
+         tools:layout="@layout/fragment_choose" />
+
+</LinearLayout>

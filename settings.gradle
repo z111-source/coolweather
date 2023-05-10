@@ -16,3 +16,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "CoolWeather"
 include ':app'
+include ':networkTest'
+include ':fragmenttest'
