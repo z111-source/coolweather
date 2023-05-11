@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -11,7 +12,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.preference.PreferenceManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.coolweather.gson.Forecast;
 import com.example.coolweather.gson.Weather;
@@ -24,7 +28,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class WeatherActivity extends AppCompatActivity {
+public class WeatherActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ScrollView weatherLayout;
     private TextView titleCity;
@@ -37,6 +41,9 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView comfortText;
     private TextView carWashText;
     private TextView sportText;
+    public SwipeRefreshLayout swipeRefresh;
+    private Button menu;
+    public DrawerLayout drawerLayout;
 
 
     @Override
@@ -55,21 +62,39 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText = findViewById(R.id.car_wash_text);
         sportText = findViewById(R.id.sport_text);
 
+        //加入下拉刷新
+        swipeRefresh = findViewById(R.id.swipe_refresh);
+        swipeRefresh.setColorSchemeResources(
+                androidx.navigation.ui.R.color.design_default_color_primary);
+
+        //加入滑动菜单
+        menu = findViewById(R.id.btn_menu);
+        drawerLayout = findViewById(R.id.drawer);
+        menu.setOnClickListener(this);
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
                 this);
         String weatherString=prefs.getString("weather",null);//null ?
+        final String weatherId;
         if(weatherString!=null){
             //有数据直接解析显示
             Weather weather= Utility.handleWeatherResponse(weatherString);
+            weatherId=weather.basic.weatherId;
             showWeatherInfo(weather);
         }else {
             //没数据则发起请求
-            String weatherId=getIntent().getStringExtra("weather_id");
+            weatherId=getIntent().getStringExtra("weather_id");
             //“weather_id”是intent从fragment县列表的传来的county的weatherId
 
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(weatherId);      //请求数据
         }
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                requestWeather(weatherId);
+            }
+        });
 
     }
 
@@ -86,6 +111,7 @@ public class WeatherActivity extends AppCompatActivity {
                     public void run() {
                         Toast.makeText(WeatherActivity.this, "加载失败",
                                 Toast.LENGTH_SHORT).show();
+                        swipeRefresh.setRefreshing(false);
                     }
                 });
             }
@@ -114,6 +140,7 @@ public class WeatherActivity extends AppCompatActivity {
                             Toast.makeText(WeatherActivity.this, "获取天气失败",
                                     Toast.LENGTH_SHORT).show();
                         }
+                        swipeRefresh.setRefreshing(false);
                     }
                 });
             }
@@ -163,8 +190,10 @@ public class WeatherActivity extends AppCompatActivity {
         sportText.setText(sport);
 
         weatherLayout.setVisibility(View.VISIBLE);
-
     }
 
-
+    @Override
+    public void onClick(View v) {
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
 }
