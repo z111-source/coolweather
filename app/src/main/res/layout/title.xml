@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/actionBar"
     android:background="@color/design_default_color_primary">
+
     <Button
         android:id="@+id/btn_menu"
-        android:layout_width="60dp"
-        android:layout_height="46dp"
-        android:text="菜单"
-        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
         android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="10dp"/>
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="2dp"
+        android:backgroundTint="#66559966"
+        android:text="切换城市"
+        android:textColor="@color/white"
+        android:textSize="17sp" />
+
     <TextView
         android:id="@+id/title_city"
         android:layout_width="wrap_content"
@@ -20,14 +23,16 @@
         android:layout_centerInParent="true"
         android:layout_centerVertical="true"
         android:textColor="@color/white"
-        android:textSize="20sp"/>
+        android:textSize="20sp" />
+
     <TextView
         android:id="@+id/title_updateTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:textSize="16sp"
-        android:textColor="@color/white"/>
+        android:layout_marginEnd="10dp"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
 </RelativeLayout>

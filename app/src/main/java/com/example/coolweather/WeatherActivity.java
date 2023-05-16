@@ -66,7 +66,7 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
 
         //加入下拉刷新
         swipeRefresh = findViewById(R.id.swipe_refresh);
-        swipeRefresh.setColorSchemeResources(
+        swipeRefresh.setColorSchemeResources(   //刷新图标颜色
                 androidx.navigation.ui.R.color.design_default_color_primary);
 
         //加入滑动菜单
@@ -76,45 +76,37 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
                 this);
-        String weatherString=prefs.getString("weather",null);//null ?
+        String weatherString = prefs.getString("weather", null);//null ?
         final String weatherId;
-        if(weatherString!=null){
+        if (weatherString != null) {
             //有数据直接解析显示
-            Weather weather= Utility.handleWeatherResponse(weatherString);
-            weatherId=weather.basic.weatherId;
+            Weather weather = Utility.handleWeatherResponse(weatherString);
+            weatherId = weather.basic.weatherId;
             showWeatherInfo(weather);
-        }else {
+        } else {
             //没数据则发起请求
-            weatherId=getIntent().getStringExtra("weather_id");
+            weatherId = getIntent().getStringExtra("weather_id");
             //“weather_id”是intent从fragment县列表的传来的county的weatherId
 
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(weatherId);      //请求数据
         }
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                requestWeather(weatherId);
-            }
-        });
+        swipeRefresh.setOnRefreshListener(() -> requestWeather(weatherId));
 
     }
 
     public void requestWeather(final String weatherId) {
         //why public,final
-        String weatherUrl="http://guolin.tech/api/weather?cityid="
-                +weatherId+"&key=bc0418b57b2d4918819d3974ac1285d9";
+        String weatherUrl = "http://guolin.tech/api/weather?cityid="
+                + weatherId + "&key=bc0418b57b2d4918819d3974ac1285d9";
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(WeatherActivity.this, "加载失败",
-                                Toast.LENGTH_SHORT).show();
-                        swipeRefresh.setRefreshing(false);
-                    }
+                runOnUiThread(() -> {
+                    Toast.makeText(WeatherActivity.this, "加载失败",
+                            Toast.LENGTH_SHORT).show();
+                    swipeRefresh.setRefreshing(false);
                 });
             }
 
@@ -124,26 +116,22 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
                 final String responseText = response.body().string();
                 //weather为GSON解析完成的Weather类
                 final Weather weather = Utility.handleWeatherResponse(responseText);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(weather != null && "ok".equals(weather.status)){
-                            //SharedPreferences.Editor
-                            SharedPreferences.Editor editor = PreferenceManager.
-                                    getDefaultSharedPreferences(WeatherActivity.this).edit();
+                runOnUiThread(() -> {
+                    if (weather != null && "ok".equals(weather.status)) {
+                        //SharedPreferences.Editor
+                        SharedPreferences.Editor editor = PreferenceManager.
+                                getDefaultSharedPreferences(WeatherActivity.this).edit();
 
-                            //保存weather的json数据
-                            editor.putString("weather",responseText);
-                            editor.apply();
+                        //保存weather的json数据
+                        editor.putString("weather", responseText);
+                        editor.apply();
 
-                            showWeatherInfo(weather);
-                        }
-                        else {
-                            Toast.makeText(WeatherActivity.this, "获取天气失败",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                        swipeRefresh.setRefreshing(false);
+                        showWeatherInfo(weather);
+                    } else {
+                        Toast.makeText(WeatherActivity.this, "获取天气失败",
+                                Toast.LENGTH_SHORT).show();
                     }
+                    swipeRefresh.setRefreshing(false);
                 });
             }
         });
@@ -152,7 +140,7 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
 
     //显示天气信息页面
     private void showWeatherInfo(Weather weather) {
-        if(weather != null && "ok".equals(weather.status)) {
+        if (weather != null && "ok".equals(weather.status)) {
             String cityName = weather.basic.cityName;
             String updateTime = weather.basic.update.updateTime.split(" ")[1];
             //.spilt(" ")以空格为分隔符    【1】？
@@ -196,8 +184,8 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
 
             Intent intent = new Intent(this, AutoUpdateService.class);
             startService(intent);
-        }else {
-            Toast.makeText(WeatherActivity.this,"获取天气信息失败",
+        } else {
+            Toast.makeText(WeatherActivity.this, "获取天气信息失败",
                     Toast.LENGTH_SHORT).show();
         }
     }
