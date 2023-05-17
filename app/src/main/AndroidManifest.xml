@@ -20,8 +20,9 @@
         <service
             android:name=".service.AutoUpdateService"
             android:enabled="true"
-            android:exported="false"
-            android:permission="TODO" />
+            android:exported="true"
+            android:permission="TODO"
+            />
 
         <activity
             android:name=".WeatherActivity"
