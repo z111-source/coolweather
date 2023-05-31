@@ -21,6 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.coolweather.gson.Forecast;
 import com.example.coolweather.gson.Weather;
 import com.example.coolweather.service.AutoUpdateService;
+import com.example.coolweather.service.ForeService;
 import com.example.coolweather.util.HttpUtil;
 import com.example.coolweather.util.Utility;
 
@@ -44,7 +45,6 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
     private TextView carWashText;
     private TextView sportText;
     public SwipeRefreshLayout swipeRefresh;
-    private Button menu;
     public DrawerLayout drawerLayout;
 
 
@@ -70,9 +70,10 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
                 androidx.navigation.ui.R.color.design_default_color_primary);
 
         //加入滑动菜单
-        menu = findViewById(R.id.btn_menu);
+        Button menu = findViewById(R.id.btn_menu);
         drawerLayout = findViewById(R.id.drawer);
         menu.setOnClickListener(this);
+
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
                 this);
@@ -94,6 +95,7 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
         swipeRefresh.setOnRefreshListener(() -> requestWeather(weatherId));
 
     }
+
 
     public void requestWeather(final String weatherId) {
         //why public,final
@@ -181,7 +183,6 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
             sportText.setText(sport);
 
             weatherLayout.setVisibility(View.VISIBLE);
-
             Intent intent = new Intent(this, AutoUpdateService.class);
             startService(intent);
         } else {
@@ -193,5 +194,12 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Intent i = new Intent(this, ForeService.class);
+        stopService(i);
+        super.onDestroy();
     }
 }
